@@ -49,6 +49,18 @@ function rgb(r,g,b) {
     return 'rgb('+r+','+b+','+g+')';
 }
 
+function toFixed(value, precision) {
+    var precision = precision || 0,
+    neg = value < 0,
+    power = Math.pow(10, precision),
+    value = Math.round(value * power),
+    integral = String((neg ? Math.ceil : Math.floor)(value / power)),
+    fraction = String((neg ? -value : value) % power),
+    padding = new Array(Math.max(precision - fraction.length, 0) + 1).join('0');
+
+    return precision ? integral + '.' +  padding + fraction : integral;
+}
+
 function mymod(a, b){
   return a - b*Math.floor(a/b) + b*(a<0);
 }
@@ -248,21 +260,25 @@ function init_circle(frac){
     }
 }
 
+
+/*======================================================================
+  the javascript interface stuff
+=========================================================================*/
 function update_flock(){
     flock = document.getElementById('flock').value;
-    document.getElementById('label_flock').innerHTML = flock;
+    document.getElementById('label_flock').innerHTML = toFixed(flock,2);
 }
 function update_noise(){
     noise = document.getElementById('noise').value;
-    document.getElementById('label_noise').innerHTML = noise;
+    document.getElementById('label_noise').innerHTML = toFixed(noise,2);
 }
 function update_speed(){
     vhappy = document.getElementById('speed').value;
-    document.getElementById('label_speed').innerHTML = vhappy;
+    document.getElementById('label_speed').innerHTML = toFixed(vhappy,2);
 }
 function update_boxsize(){
     lx = ly = document.getElementById('boxsize').value;
-    document.getElementById('label_boxsize').innerHTML = lx;
+    document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);
 }
 function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked;    }
 function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
@@ -281,8 +297,18 @@ function update_pause(){
 function update_num(){
     n = document.getElementById('num').value;
     update_restart();
+    var box = document.getElementById('boxsize');
+    var boxsize = Math.floor(lx);
+    box.min = Math.floor(boxsize*0.93);
+    box.max = Math.floor(boxsize*1.07);
+    box.step = (0.14*boxsize/20);
+    box.value = boxsize;
+    document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);
 }
 
+/*===============================================================================
+    initialization and drawing 
+================================================================================*/
 var tick = function(T) {
     if (dodraw == true) {
         ctx.fillStyle = 'rgba(200,200,200,0.2)';
@@ -318,10 +344,10 @@ var init = function() {
     document.getElementById('noise').value = noise;
     document.getElementById('speed').value = vhappy;
     document.getElementById('boxsize').value = lx;
-    document.getElementById('label_flock').innerHTML = flock;
-    document.getElementById('label_noise').innerHTML = noise;
-    document.getElementById('label_speed').innerHTML = vhappy;
-    document.getElementById('label_boxsize').innerHTML = lx;
+    document.getElementById('label_flock').innerHTML   = toFixed(flock,2);
+    document.getElementById('label_noise').innerHTML   = toFixed(noise,2);
+    document.getElementById('label_speed').innerHTML   = toFixed(vhappy,2);
+    document.getElementById('label_boxsize').innerHTML = toFixed(lx,2);
 
     /* initialize the neighborlist */
     size[0] = Math.floor(lx / FR);
