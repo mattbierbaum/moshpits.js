@@ -1,5 +1,78 @@
 <html>
-<body>
+<head>
+
 <script src="entbody.js"></script>
+
+<style type="text/css">
+    #big {
+        margin: 0 auto;
+        width: 810px;
+    }
+
+    #entbody {
+        float: left;
+        color: red;
+        width: 400px;
+        height: 400px;
+        position: 'absolute';
+        left: 10px;
+        top: 10px;
+        border: 1px solid black;
+    }
+
+    #panelcontainer {
+        float: left;
+        left: 220px;
+        top: 10px;
+        width: 400px;
+        height: 400px;
+        border: solid 1px black;
+
+    }
+
+    #panel {
+        padding: 10px;
+    }
+
+    label {
+        position: relative; 
+        width: 7em; 
+        float: left;
+        text-align: right;
+    }
+</style>
+
+
+<title>Moshpits.js</title>
+</head>
+<body>
+<div id='big'>
+    <center><h1>Moshpits Simulation</h1></center>
+    <div id='entbody'>
+        <canvas id='canvas' height=400 width=400></canvas>
+    </div>
+    <div id='panelcontainer'>
+        <!-- ===================  add control panel items between here ============== -->
+        <div id='panel'>
+            <center><h2>Control panel</h2></center>
+            <div>
+                <label for="flock">Flock strength</label>
+                <input type="range" id="flock" min=0 max=1.0 step=0.1 value=0.5 onchange="update_flock()"></input>
+                <span id="label_flock"></span>
+            </div>
+            <div>
+                <label for="noise">Noise strength</label>
+                <input type="range" id="noise" min=0 max=10.0 step=0.2 value=0.0 onchange="update_noise()"></input>
+                <span id="label_noise"></span>
+            </div>
+            <div>
+                <center>
+                <input type='button' value='Pause'   onclick='update_pause()'></input>
+                <input type='button' value='Restart' onclick='update_restart()'></input>
+                </center>
+        </div>
+        <!-- ==========================   and here ================================= -->
+    </div>
+</div>
 </body>
 </html>

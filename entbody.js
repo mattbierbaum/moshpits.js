@@ -37,6 +37,7 @@ var damp   = 1.0;
 var c;
 var ctx;
 var empty;
+var frame = 0;
 var dodraw = true;
 
 var MONITOR_GLOBALS=false;
@@ -217,62 +218,60 @@ function init_circle(frac){
     }
 }
 
-function createHTML(str){
-    var div = document.createElement('div');
-    div.innerHTML = str;
-    return div;
+function update_flock(){
+    var v = document.getElementById('flock').value;
+    flock = v;
+    document.getElementById('label_flock').innerHTML = v;
 }
 
-function createSlider(div, desc, iid, imin, imax, istep, idefault){
-    var s = document.createElement('input');
-    div.appendChild(s);
-    s.type = "range";
-    s.id   = iid;
-    s.min  = imin;
-    s.max  = imax;
-    s.step = istep;
-    s.value = idefault;
-    return s;
+function update_noise(){
+    var v = document.getElementById('noise').value;
+    noise = v;
+    document.getElementById('label_noise').innerHTML = v;
 }
+
+function update_pause(){
+    if (dodraw == true){
+        dodraw = false;
+    } else {
+        requestAnimationFrame(tick, c);
+        dodraw = true;
+    }
+}
+
+function update_restart(){
+    init_empty();
+    init_circle(0.15);
+}
+
+var tick = function(T) {
+    if (dodraw == true) {
+        ctx.fillStyle = 'rgba(200,200,200,0.2)';
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.fillRect(0,0,c.width,c.height);
+        for (var i=0; i<2; i++){
+            frame++;
+            nbl_bin();
+            update();
+        }
+        
+        draw_all(x, y, r, lx, ly, c.width, c.height, ctx);
+        requestAnimationFrame(tick, c);
+    }
+};
 
 var init = function() {
     // create the canvas element
-    c = document.createElement('canvas');
     empty = document.createElement('canvas');
     empty.width = empty.height = 1;
+    c = document.getElementById('canvas');
     c.style.cursor = 'url('+empty.toDataURL()+')';
-    var L = 0;
-    if (window.innerWidth < window.innerHeight*2){
-        L = window.innerWidth/2;
-    } else {
-        L = window.innerHeight;
-    }
-    var border = 0.05*L;
-    c.width  = L-2*border;
-    c.height = L-2*border;
-    c.style.position = 'absolute';
-    c.style.border = 'solid';
-    c.style.left = c.style.top = border+'px';
     ctx = c.getContext('2d');
-    document.body.appendChild(c);
 
-    div = document.createElement('div');
-    var inside = 0;
-    var divleft = border+L-2*border;
-    div.style.width = (c.width-2*inside)+'px';
-    div.style.height = (c.height-2*inside)+'px';
-    div.style.position = 'absolute';
-    div.style.left = (divleft+inside)+'px';
-    div.style.top = (border+inside)+'px';
-    div.style.border = 'solid';
-    document.body.appendChild(div);
-
-    div.appendChild(createHTML("<h1>Control Panel</h1>"));
-    slide_flock = createSlider(div, "Flocking strength", "flock", 0, 1.0, 0.05, flock); 
-    slide_flock.onchange = function() { flock = slide_flock.value; };
-
-    slide_noise = createSlider(div, "Noise strength", "noise", 0, 1.0, 0.05, noise); 
-    slide_noise.onchange = function() { noise = slide_noise.value; };
+    document.getElementById('flock').value = flock;
+    document.getElementById('noise').value = noise;
+    document.getElementById('label_flock').innerHTML = flock;
+    document.getElementById('label_noise').innerHTML = noise;
 
     lx = 1.03*Math.sqrt(Math.PI*radius*radius*n);
     ly = lx;
@@ -290,21 +289,6 @@ var init = function() {
     }
 
     /* run the simulation loop */
-    var frame = 0;
-    var tick = function(T) {
-        ctx.fillStyle = 'rgba(200,200,200,0.2)';
-        ctx.clearRect(0, 0, c.width, c.height);
-        ctx.fillRect(0,0,c.width,c.height);
-        for (var i=0; i<2; i++){
-            frame++;
-            nbl_bin();
-            update();
-        }
-        
-        draw_all(x, y, r, lx, ly, c.width, c.height, ctx);
-        if (dodraw) 
-            requestAnimationFrame(tick, c);
-    };
 
     c.addEventListener('mousemove', function(ev) {
         mx = ev.clientX;
@@ -320,6 +304,7 @@ var init = function() {
         my = -1;
     }, false);
 
+    registerAnimationRequest();
     requestAnimationFrame(tick, c);
 };
 window.onload = init;
@@ -327,6 +312,7 @@ window.onload = init;
 
 // Provides requestAnimationFrame in a cross browser way.
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+function registerAnimationRequest() {
 if ( !window.requestAnimationFrame ) {
     window.requestAnimationFrame = ( function() {
       return window.webkitRequestAnimationFrame ||
@@ -337,6 +323,7 @@ if ( !window.requestAnimationFrame ) {
               window.setTimeout( callback, 1 ); /*1000 / 60 );*/
       };
     } )();
+}
 }
 
 if (MONITOR_GLOBALS) {
