@@ -7,6 +7,8 @@ var fx=[];
 var fy=[];
 var r=[];
 var type=[];
+var col=[];
+var colavg;
 
 // things we can change
 var n = 1000;
@@ -39,10 +41,11 @@ var ctx;
 var empty;
 var frame = 0;
 var dodraw = true;
+var showforce = false;
 
 var MONITOR_GLOBALS=false;
 
-function rgb_to_color(r,g,b) {
+function rgb(r,g,b) {
     return 'rgb('+r+','+b+','+g+')';
 }
 
@@ -80,8 +83,10 @@ function nbl_bin(){
 
 
 function update(){
+    colavg = 0.0;
     var image = [0,0];
     for (var i=0; i<n; i++) {
+        col[i] = 0.0;
         fx[i] = 0.0; 
         fy[i] = 0.0;
         var wx = 0.0; 
@@ -111,6 +116,10 @@ function update(){
                         var c0 = -epsilon * f*f * (l<r0);
                         fx[i] += c0*dx;
                         fy[i] += c0*dy;
+                        
+
+                        var tcol = fx[i]*fx[i] + fy[i]*fy[i];
+                        col[i] += tcol;
                     }
                     if (type[i] == 1 && type[j] == 1 && l > 1e-6 && l < FR){
                         wx += vx[j]; wy += vy[j];
@@ -137,6 +146,8 @@ function update(){
             fx[i] += noise * (Math.random()-0.5);
             fy[i] += noise * (Math.random()-0.5);
         }
+        colavg += col[i];
+
     }
 
     for (var i=0; i<n; i++){
@@ -159,6 +170,7 @@ function update(){
             if (y[i] >= ly || y[i] < 0) {y[i] = mymod(y[i], ly);}
         } 
     }
+    colavg /= n;
 }
 
 function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
@@ -174,11 +186,24 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
         ctx.strokeStyle = "#000000";
         ctx.stroke();
 
+        var cr,cg,cb;
         if (type[i] == 0){
-            ctx.fillStyle = "#333333";
+            if (showforce == true){
+                cr = Math.floor(255*col[i]/(5*colavg));
+                if (cr > 255) {cr = 255;}
+                cg = cr;
+                cb = cr;
+            } else {
+                cr = 50;
+                cg = 50;
+                cb = 50;
+            }
         } else {
-            ctx.fillStyle = "#ff0000";
+            cr = 255;
+            cg = 0;
+            cb = 0;
         }
+        ctx.fillStyle = rgb(cr,cg,cb);
         ctx.fill();
     }
 }
@@ -198,7 +223,12 @@ function init_empty(){
         type.push(0);
         vx.push(0.0);
         vy.push(0.0);
+        fx.push(0.0);
+        fy.push(0.0);
+        col.push(0.0);
     }
+    lx = Math.floor(1.03*Math.sqrt(Math.PI*radius*radius*n));
+    ly = lx;
 }
 
 function init_circle(frac){
@@ -219,16 +249,25 @@ function init_circle(frac){
 }
 
 function update_flock(){
-    var v = document.getElementById('flock').value;
-    flock = v;
-    document.getElementById('label_flock').innerHTML = v;
+    flock = document.getElementById('flock').value;
+    document.getElementById('label_flock').innerHTML = flock;
 }
-
 function update_noise(){
-    var v = document.getElementById('noise').value;
-    noise = v;
-    document.getElementById('label_noise').innerHTML = v;
+    noise = document.getElementById('noise').value;
+    document.getElementById('label_noise').innerHTML = noise;
 }
+function update_speed(){
+    vhappy = document.getElementById('speed').value;
+    document.getElementById('label_speed').innerHTML = vhappy;
+}
+function update_boxsize(){
+    lx = ly = document.getElementById('boxsize').value;
+    document.getElementById('label_boxsize').innerHTML = lx;
+}
+function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked;    }
+function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
+function update_force(){ showforce = document.getElementById('showforce').checked; }
+function update_restart(){ init_empty(); init_circle(0.15);}
 
 function update_pause(){
     if (dodraw == true){
@@ -239,9 +278,9 @@ function update_pause(){
     }
 }
 
-function update_restart(){
-    init_empty();
-    init_circle(0.15);
+function update_num(){
+    n = document.getElementById('num').value;
+    update_restart();
 }
 
 var tick = function(T) {
@@ -268,15 +307,21 @@ var init = function() {
     c.style.cursor = 'url('+empty.toDataURL()+')';
     ctx = c.getContext('2d');
 
-    document.getElementById('flock').value = flock;
-    document.getElementById('noise').value = noise;
-    document.getElementById('label_flock').innerHTML = flock;
-    document.getElementById('label_noise').innerHTML = noise;
-
-    lx = 1.03*Math.sqrt(Math.PI*radius*radius*n);
-    ly = lx;
     init_empty();
     init_circle(0.15);
+
+    document.getElementById('num').value = n;
+    document.getElementById('periodicx').checked = pbc[0];
+    document.getElementById('periodicy').checked = pbc[1];
+    document.getElementById('showforce').checked = showforce;
+    document.getElementById('flock').value = flock;
+    document.getElementById('noise').value = noise;
+    document.getElementById('speed').value = vhappy;
+    document.getElementById('boxsize').value = lx;
+    document.getElementById('label_flock').innerHTML = flock;
+    document.getElementById('label_noise').innerHTML = noise;
+    document.getElementById('label_speed').innerHTML = vhappy;
+    document.getElementById('label_boxsize').innerHTML = lx;
 
     /* initialize the neighborlist */
     size[0] = Math.floor(lx / FR);
