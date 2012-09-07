@@ -2,8 +2,11 @@ var graph;
 var graphctx;
 
 var all = [];
-var maxnum = 100000;
-var maxval = 1e-6;
+var big = [];
+var maxnum = 300;
+var maxvala = 1e-6;
+var maxvalb = 1e-6;
+var pushes = 0;
 
 var data   = [];
 var order  = [];
@@ -14,8 +17,16 @@ var maxbin = 1;
 
 function graph_push(d){
     all.push(d);
+    pushes++;
+    if (pushes % 100 == 0) {
+        big.push(d); 
+        if (Math.abs(d) > maxvalb) {
+            maxvalb = Math.abs(d);
+        }
+    }
+    if (Math.abs(d) > maxvala) {maxvala = Math.abs(d);}
+    if (big.length > maxnum){ big.shift(); }
     if (all.length > maxnum){ all.shift(); }
-    if (Math.abs(d) > maxval) {maxval = Math.abs(d);}
 }
 
 function graph_vel(v){
@@ -37,8 +48,11 @@ function graph_vel(v){
 function graph_del(){
     data = [];
     all = [];
+    big = [];
+    pushes = 0;
     order = [];
-    maxval = 1e-6;
+    maxvala = 1e-6;
+    maxvalb = 1e-6;
     maxbin = 1;
     for (var i=0; i<bins; i++){
         data.push(0);
@@ -51,8 +65,10 @@ function graph_clear(){
     graphctx.fillRect(0,0, graph.width, graph.height);
 }
 
-function calcx1(i){return ((graph.width/2 / all.length) * i);}
-function calcy1(d){return graph.height/2 + ((graph.height/2) / maxval) * d; }
+function calcx1a(i){return ((graph.width/4 / big.length) * i);}
+function calcy1a(d){return graph.height/2 + ((graph.height/2) / maxvala) * d; }
+function calcx1b(i){return graph.width/4 + ((graph.width/4 / all.length) * i);}
+function calcy1b(d){return graph.height/2 + ((graph.height/2) / maxvalb) * d; }
 function calcx2(i){return ((graph.width/2 / bins) * i) + graph.width/2;}
 function calcy2(d){return graph.height - ((graph.height) / maxbin) * d; }
 
@@ -67,6 +83,11 @@ function graph_draw(){
     graphctx.lineTo(graph.width/2, graph.height);
     graphctx.stroke();
 
+    graphctx.beginPath();
+    graphctx.moveTo(graph.width/4, 0); 
+    graphctx.lineTo(graph.width/4, graph.height);
+    graphctx.stroke();
+
     for (var i=0; i<data.length-1; i++){
         graphctx.beginPath();   
         graphctx.moveTo(calcx2(i),   calcy2(data[i])  );
@@ -75,8 +96,14 @@ function graph_draw(){
     }
     for (var i=0; i<all.length-1; i++){
         graphctx.beginPath();   
-        graphctx.moveTo(calcx1(i),   calcy1(all[i])  );
-        graphctx.lineTo(calcx1(i+1), calcy1(all[i+1]));
+        graphctx.moveTo(calcx1b(i),   calcy1b(all[i])  );
+        graphctx.lineTo(calcx1b(i+1), calcy1b(all[i+1]));
+        graphctx.stroke();
+    }
+    for (var i=0; i<big.length-1; i++){
+        graphctx.beginPath();   
+        graphctx.moveTo(calcx1a(i),   calcy1a(big[i])  );
+        graphctx.lineTo(calcx1a(i+1), calcy1a(big[i+1]));
         graphctx.stroke();
     }
 }
