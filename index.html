@@ -44,6 +44,7 @@
         padding: 15px;
     }
 
+
     label {
         position: relative; 
         padding-right: 6px;
@@ -55,6 +56,11 @@
     span {
         position: relative;
         top: -6px;
+    }
+    
+    #tiny_yt {
+        position: relative;
+        top: 5px;
     }
 </style>
 
@@ -126,8 +132,8 @@
             <div>
                 <center>
                 <input type='checkbox' id='docircle' value=1 onclick='update_circle()'>Circular ICs --</input>
-                <input type='checkbox' id='vorticity'        onclick='update_vorticity()'>Show Vorticity --</input>
-                <input type='checkbox' id='music'          onclick='update_music()'>Music</input>
+                <input type='checkbox' id='vorticity'        onclick='update_vorticity()'>Show Vorticity</input>
+                <!--<input type='checkbox' id='music'          onclick='update_music()'>Music</input>-->
                 </center>
             </div>
 
@@ -157,7 +163,13 @@
         <input type='button' id='init_chains' value="Force Chains" onclick='create_chains()'></input>
         <input type='button' id='init_crystal' value="Crystal" onclick='create_crystal()'></input>
 
-<object id='yt' type="application/x-shockwave-flash" width="30" height="25" data="https://www.youtube-nocookie.com/v/W7wpzKvNhfA?version=2&enablejsapi=1&theme=dark"><param name="movie" value="https://www.youtube-nocookie.com/v/W7wpzKvNhfA?version=2&enablejsapi=1&theme=dark" /><param name="wmode" value="transparent" /></object>
+        <span id='tiny_yt'>
+        <object id='yt' type="application/x-shockwave-flash" width="150" height="25" 
+            data="https://www.youtube-nocookie.com/v/W7wpzKvNhfA?version=2&enablejsapi=1&theme=dark">
+            <param name="movie" value="https://www.youtube-nocookie.com/v/W7wpzKvNhfA?version=2&enablejsapi=1&theme=dark" />
+            <param name="wmode" value="transparent" />
+        </object>
+        </span>
     </p></center>
 </div>
 </body>

@@ -400,7 +400,7 @@ function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked; 
 function update_force(){ showforce = document.getElementById('showforce').checked; }
 function update_circle(){docircle = document.getElementById('docircle').checked;   }
 
-function update_music() {
+/*function update_music() {
     playmusic = document.getElementById('music').checked;
     if (playmusic == true) { 
         var yt = document.getElementById('yt')
@@ -414,7 +414,7 @@ function update_music() {
             yt.pauseVideo(); 
         }  
     }
-}
+}*/
 
 function update_vorticity(){
     dovorticity = document.getElementById('vorticity').checked;   
@@ -506,7 +506,7 @@ function update_allcontrols(){
     document.getElementById('label_frames').innerHTML  = toFixed(frameskip,2);
     document.getElementById('label_frac').innerHTML    = toFixed(frac,2);
     
-    document.getElementById('music').value = playmusic;
+    /*document.getElementById('music').value = playmusic;
     if (playmusic == true) { 
         var yt = document.getElementById('yt')
         if (yt.playVideo) {
@@ -518,7 +518,7 @@ function update_allcontrols(){
         if (yt.pauseVideo) {
             yt.pauseVideo(); 
         }  
-    }
+    }*/
 }
 
 function create_moshpit(){
