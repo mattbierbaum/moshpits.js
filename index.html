@@ -97,7 +97,7 @@
             </div>
             <div>
                 <label for="boxsize">Box size</label>
-                <input type="range" id="boxsize" min=50 max=70 step=1.0 value=0.0 onchange="update_boxsize()"></input>
+                <input type="range" id="boxsize" min=10 max=100 step=0.2 value=0.0 onchange="update_boxsize()"></input>
                 <span id="label_boxsize"></span>
             </div>
             <div>
@@ -116,17 +116,16 @@
                 <span id="label_frac"></span>
             </div>
 
-            <br/>
             <div>
                 <center>
-                <input type='checkbox' id='periodicx' value=1 onclick='update_pbcx()'>x-periodic</input>
-                <input type='checkbox' id='periodicy' value=1 onclick='update_pbcy()'>y-periodic</input>
+                <input type='checkbox' id='periodicx' value=1 onclick='update_pbcx()'>x-periodic --</input>
+                <input type='checkbox' id='periodicy' value=1 onclick='update_pbcy()'>y-periodic --</input>
                 <input type='checkbox' id='showforce' value=1 onclick='update_force()'>Show forces</input>
                 </center>
             </div>
             <div>
                 <center>
-                <input type='checkbox' id='docircle' value=1 onclick='update_circle()'>Circular ICs</input>
+                <input type='checkbox' id='docircle' value=1 onclick='update_circle()'>Circular ICs --</input>
                 <input type='checkbox' id='vorticity'        onclick='update_vorticity()'>Show Vorticity</input>
                 </center>
             </div>
@@ -151,6 +150,13 @@
     <div id="graphpanel">
         <canvas id='graph' height=100 width=802></canvas>
     </div>
+    <center><p>Keys: WASD, space, r</p></center>
+    <center><p>Initial Conditions:
+        <input type='button' id='init_moshpit' value="Moshpit" onclick='create_moshpit()'></input>
+        <input type='button' id='init_circlepit' value="Circlepit" onclick='create_circlepit()'></input>
+        <input type='button' id='init_chains' value="Force Chains" onclick='create_chains()'></input>
+        <input type='button' id='init_crystal' value="Crystal" onclick='create_crystal()'></input>
+    </p></center>
 </div>
 </body>
 </html>

@@ -167,7 +167,6 @@ function update(){
                         var c0 = -epsilon * f*f * (l<r0);
                         fx[i] += c0*dx;
                         fy[i] += c0*dy;
-                        
 
                         var tcol = fx[i]*fx[i] + fy[i]*fy[i];
                         col[i] += tcol;
@@ -197,7 +196,6 @@ function update(){
             fx[i] += noise * (Math.random()-0.5);
             fy[i] += noise * (Math.random()-0.5);
         }
-        colavg += col[i];
 
         if (type[i] == 1){
             if (keys[0] == 1) {fy[i] -= 5.0;}
@@ -205,6 +203,10 @@ function update(){
             if (keys[2] == 1) {fx[i] -= 5.0;}
             if (keys[3] == 1) {fx[i] += 5.0;}
         }
+
+        //var tcol = fx[i]*fx[i] + fy[i]*fy[i];
+        //col[i] += tcol;
+        colavg += col[i];
     }
 
     for (var i=0; i<n; i++){
@@ -246,7 +248,7 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
         var cr,cg,cb;
         if (type[i] == 0){
             if (showforce == true){
-                cr = Math.floor(255*col[i]/(4*colavg));
+                cr = Math.floor(255*col[i]/(4*colavg)+10);
                 if (cr > 255) {cr = 255;}
                 cg = cr;
                 cb = cr;
@@ -280,11 +282,26 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
     }
 }
 
-function init_sidelength(){
-    lx = Math.floor(1.03*Math.sqrt(Math.PI*radius*radius*n));
+function calc_sidelength(){
+    return Math.floor(1.03*Math.sqrt(Math.PI*radius*radius*n));
+}
+
+function init_sidelength(L){
+    lx = L;//
     ly = lx;
     update_boxslider();
+
+    /* initialize the neighborlist */
+    size[0] = Math.floor(lx / FR);
+    size[1] = Math.floor(ly / FR);
+    for (var i=0; i<size[0]*size[1]*NMAX; i++){
+        cells[i] = 0;
+    }
+    for (var i=0; i<size[0]*size[1]; i++){
+        count[i] = 0;
+    }
 }    
+
 
 function init_empty(){
     r = [];
@@ -377,11 +394,17 @@ function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked; 
 function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
 function update_force(){ showforce = document.getElementById('showforce').checked; }
 function update_circle(){docircle = document.getElementById('docircle').checked;   }
-function update_restart(){ init_empty(); init_circle(0.15); graph_del();}
 function update_vorticity(){
     dovorticity = document.getElementById('vorticity').checked;   
     graph_del(); 
     graph_clear();
+}
+
+function update_restart(){ 
+    init_empty(); 
+    init_circle(frac); 
+    graph_del();
+    if (dodraw == false){ update_pause(); }
 }
 
 function update_pause(){
@@ -396,19 +419,19 @@ function update_pause(){
 }
 
 function update_boxslider(){
-    var box = document.getElementById('boxsize');
+/*    var box = document.getElementById('boxsize');
     var boxsize = Math.floor(lx);
     var frac = 0.15
     box.min = Math.floor(boxsize*(1-frac));
     box.max = Math.floor(boxsize*(1+frac));
     box.step = (2*frac*boxsize/20);
     box.value = boxsize;
-    document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);
+    document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);*/
 }
 
 function update_num(){
     n = document.getElementById('num').value;
-    init_sidelength();
+    init_sidelength(lx);//calc_sidelength());
     update_restart();
     update_boxslider();
 }
@@ -435,21 +458,7 @@ var tick = function(T) {
     }
 };
 
-var init = function() {
-    // create the canvas element
-    empty = document.createElement('canvas');
-    empty.width = empty.height = 1;
-    c = document.getElementById('canvas');
-    c.style.cursor = 'url('+empty.toDataURL()+')';
-    ctx = c.getContext('2d');
-
-    graph_init();
-    graph_clear();
-
-    init_empty();
-    init_sidelength();
-    init_circle(0.15);
-
+function update_allcontrols(){
     document.getElementById('num').value = n;
     document.getElementById('periodicx').checked = pbc[0];
     document.getElementById('periodicy').checked = pbc[1];
@@ -474,16 +483,55 @@ var init = function() {
     document.getElementById('label_dt').innerHTML      = toFixed(gdt,2);
     document.getElementById('label_frames').innerHTML  = toFixed(frameskip,2);
     document.getElementById('label_frac').innerHTML    = toFixed(frac,2);
+}
 
-    /* initialize the neighborlist */
-    size[0] = Math.floor(lx / FR);
-    size[1] = Math.floor(ly / FR);
-    for (var i=0; i<size[0]*size[1]*NMAX; i++){
-        cells.push(0)
-    }
-    for (var i=0; i<size[0]*size[1]; i++){
-        count.push(0)
-    }
+function create_moshpit(){
+    graph_init(); init_empty();
+    n=500; frac=0.15; 
+    vhappy=1.0; noise=2.0;  flock=0.1; epsilon=100; damp=1.0;dt=0.1;
+    init_circle(frac);  init_sidelength(calc_sidelength());  dovorticity = true;
+    showforce = false; update_allcontrols(); graph_del();
+}
+
+function create_circlepit(){
+    graph_init(); init_empty();
+    n=500; frac=0.15; 
+    vhappy=1.0; noise=0.3;  flock=1.0; epsilon=100; damp=1.0;dt=0.1;
+    init_circle(frac);  init_sidelength(calc_sidelength());  dovorticity = true;
+    showforce = false; update_allcontrols(); graph_del();
+}
+
+function create_chains(){
+    graph_init(); init_empty();
+    n=500; frac=0.01; 
+    vhappy=1.0; noise=0.0;  flock=0.0; epsilon=150; damp=1.0;dt=0.1;
+    init_circle(frac);  init_sidelength(48);  showforce = true;
+    dovorticity = false; update_allcontrols(); graph_del();
+}
+
+function create_crystal(){
+    graph_init(); init_empty();
+    n=500; frac=0.01; 
+    vhappy=0.0; noise=0.0;  flock=0.0; epsilon=100; damp=1.0;dt=0.1;
+    init_circle(frac);  init_sidelength(39.0);  showforce = true;
+    dovorticity = false; update_allcontrols(); graph_del();
+}
+
+var init = function() {
+    // create the canvas element
+    empty = document.createElement('canvas');
+    empty.width = empty.height = 1;
+    c = document.getElementById('canvas');
+    c.style.cursor = 'url('+empty.toDataURL()+')';
+    ctx = c.getContext('2d');
+
+    graph_init();
+    graph_clear();
+
+    init_empty();
+    init_sidelength(calc_sidelength());
+    init_circle(frac);
+    update_allcontrols();
 
     document.body.addEventListener('keyup', function(ev) {
         if (ev.keyCode == 87){ keys[0] = 0; } //up
