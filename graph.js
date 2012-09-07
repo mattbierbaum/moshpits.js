@@ -20,11 +20,11 @@ function graph_push(d){
     pushes++;
     if (pushes % 100 == 0) {
         big.push(d); 
-        if (Math.abs(d) > maxvalb) {
-            maxvalb = Math.abs(d);
+        if (Math.abs(d) > maxvala) {
+            maxvala = Math.abs(d);
         }
     }
-    if (Math.abs(d) > maxvala) {maxvala = Math.abs(d);}
+    if (Math.abs(d) > maxvalb) {maxvalb = Math.abs(d);}
     if (big.length > maxnum){ big.shift(); }
     if (all.length > maxnum){ all.shift(); }
 }
