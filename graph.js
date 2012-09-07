@@ -6,7 +6,9 @@ var big = [];
 var maxnum = 300;
 var maxvala = 1e-6;
 var maxvalb = 1e-6;
+var temp = 0;
 var pushes = 0;
+var increment = 50;
 
 var data   = [];
 var order  = [];
@@ -18,11 +20,16 @@ var maxbin = 1;
 function graph_push(d){
     all.push(d);
     pushes++;
-    if (pushes % 100 == 0) {
-        big.push(d); 
-        if (Math.abs(d) > maxvala) {
-            maxvala = Math.abs(d);
+    if (pushes % increment == 0) {
+        var v = temp/increment;
+        temp = 0;
+        big.push(v); 
+        if (Math.abs(v) > maxvala) {
+            maxvala = Math.abs(v);
         }
+    }
+    else {
+        temp += d;
     }
     if (Math.abs(d) > maxvalb) {maxvalb = Math.abs(d);}
     if (big.length > maxnum){ big.shift(); }
