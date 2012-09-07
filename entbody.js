@@ -83,6 +83,36 @@ function mod_rvec(a, b, p, image, iind){
 }
 
 
+function calc_vorticity(){
+    var vor = 0.0;
+    var cmx = 0.0;
+    var cmy = 0.0;
+    var count = 0;
+
+    for (var i=0; i<n; i++){
+        if (type[i] == 1){
+            cmx += x[i];
+            cmy += y[i];
+            count++;
+        }
+    }
+    cmx /= count;
+    cmy /= count;
+
+    for (var i=0; i<n; i++){
+        if (type[i] == 1){
+            var tx = x[i] - cmx;
+            var ty = y[i] - cmy;
+            var tvx = vx[i];
+            var tvy = vy[i];
+            var tv = tvx*ty - tvy*tx;
+            vor += tv;//sqrt(tx*tx+ty*ty);
+        }
+    }
+
+    return -vor/count;
+}
+
 function nbl_bin(){
     for (var i=0; i<size[0]*size[1]; i++){
         count[i] = 0;
@@ -221,6 +251,11 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
         ctx.fillStyle = rgb(cr,cg,cb);
         ctx.fill();
     }
+
+    if (dovorticity == true){
+        graph_clear();
+        graph_draw();
+    }
 }
 
 function init_empty(){
@@ -304,8 +339,12 @@ function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked; 
 function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
 function update_force(){ showforce = document.getElementById('showforce').checked; }
 function update_circle(){docircle = document.getElementById('docircle').checked;   }
-function update_vorticity(){dovorticity = document.getElementById('vorticity').checked;   }
 function update_restart(){ init_empty(); init_circle(0.15);}
+function update_vorticity(){
+    dovorticity = document.getElementById('vorticity').checked;   
+    graph_del(); 
+    graph_clear();
+}
 
 function update_pause(){
     if (dodraw == true){
@@ -345,8 +384,11 @@ var tick = function(T) {
             frame++;
             nbl_bin();
             update();
+            if (dovorticity == true){
+                graph_push(calc_vorticity());
+            }
         }
-        
+ 
         draw_all(x, y, r, lx, ly, c.width, c.height, ctx);
         requestAnimationFrame(tick, c);
     }
@@ -359,6 +401,9 @@ var init = function() {
     c = document.getElementById('canvas');
     c.style.cursor = 'url('+empty.toDataURL()+')';
     ctx = c.getContext('2d');
+
+    graph_init();
+    graph_clear();
 
     init_empty();
     init_circle(0.15);

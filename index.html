@@ -1,6 +1,6 @@
 <html>
 <head>
-
+<script src="graph.js"></script>
 <script src="entbody.js"></script>
 
 <style type="text/css">
@@ -17,6 +17,16 @@
         position: 'absolute';
         left: 10px;
         top: 10px;
+        border: 1px solid black;
+    }
+
+    #graphpanel {
+        float: left;
+        width: 802px;
+        height: 100px;
+        position: 'absolute';   
+        left: 10px;
+        top: 410px;
         border: 1px solid black;
     }
 
@@ -130,6 +140,9 @@
             </div>
         </div>
         <!-- ==========================   and here ================================= -->
+    </div>
+    <div id="graphpanel">
+        <canvas id='graph' height=100 width=802></canvas>
     </div>
 </div>
 </body>
