@@ -490,7 +490,7 @@ function create_moshpit(){
     n=500; frac=0.15; 
     vhappy=1.0; noise=2.0;  flock=0.1; epsilon=100; damp=1.0;dt=0.1;
     init_circle(frac);  init_sidelength(calc_sidelength());  dovorticity = true;
-    showforce = false; update_allcontrols(); graph_del();
+    showforce = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
 function create_circlepit(){
@@ -498,7 +498,7 @@ function create_circlepit(){
     n=500; frac=0.15; 
     vhappy=1.0; noise=0.3;  flock=1.0; epsilon=100; damp=1.0;dt=0.1;
     init_circle(frac);  init_sidelength(calc_sidelength());  dovorticity = true;
-    showforce = false; update_allcontrols(); graph_del();
+    showforce = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
 function create_chains(){
@@ -506,7 +506,7 @@ function create_chains(){
     n=500; frac=0.01; 
     vhappy=1.0; noise=0.0;  flock=0.0; epsilon=150; damp=1.0;dt=0.1;
     init_circle(frac);  init_sidelength(48);  showforce = true;
-    dovorticity = false; update_allcontrols(); graph_del();
+    dovorticity = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
 function create_crystal(){
@@ -514,7 +514,7 @@ function create_crystal(){
     n=500; frac=0.01; 
     vhappy=0.0; noise=0.0;  flock=0.0; epsilon=100; damp=1.0;dt=0.1;
     init_circle(frac);  init_sidelength(39.0);  showforce = true;
-    dovorticity = false; update_allcontrols(); graph_del();
+    dovorticity = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
 var init = function() {
