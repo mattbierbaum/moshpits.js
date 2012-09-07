@@ -400,7 +400,8 @@ function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked; 
 function update_force(){ showforce = document.getElementById('showforce').checked; }
 function update_circle(){docircle = document.getElementById('docircle').checked;   }
 
-function update_music() {
+function update_music() {}
+/*
     playmusic = document.getElementById('music').checked;
     if (playmusic == true) { 
         var yt = document.getElementById('yt')
@@ -414,7 +415,7 @@ function update_music() {
             yt.pauseVideo(); 
         }  
     }
-} 
+}*/
 
 function update_vorticity(){
     dovorticity = document.getElementById('vorticity').checked;   
@@ -506,7 +507,7 @@ function update_allcontrols(){
     document.getElementById('label_frames').innerHTML  = toFixed(frameskip,2);
     document.getElementById('label_frac').innerHTML    = toFixed(frac,2);
     
-    document.getElementById('music').value = playmusic;
+    /*document.getElementById('music').value = playmusic;
     if (playmusic == true) { 
         var yt = document.getElementById('yt')
         if (yt.playVideo) {
@@ -518,12 +519,12 @@ function update_allcontrols(){
         if (yt.pauseVideo) {
             yt.pauseVideo(); 
         }  
-    }
+    }*/
 }
 
 function create_moshpit(){
     graph_init(); init_empty();
-    n=500; frac=0.15; 
+    n=500; frac=0.15; frameskip = 2;
     vhappy=1.0; noise=2.0;  flock=0.1; epsilon=100; damp=1.0;dt=0.1;
     init_sidelength(calc_sidelength()); init_circle(frac);   dovorticity = true; dodraw=false;update_pause();
     showforce = false; update_allcontrols(); graph_del(); graph_clear();
@@ -531,7 +532,7 @@ function create_moshpit(){
 
 function create_circlepit(){
     graph_init(); init_empty();
-    n=500; frac=0.15; 
+    n=500; frac=0.15; frameskip = 2; 
     vhappy=1.0; noise=0.3;  flock=1.0; epsilon=100; damp=1.0;dt=0.1;
     init_sidelength(calc_sidelength()); init_circle(frac);   dovorticity = true; dodraw=false;update_pause();
     showforce = false; update_allcontrols(); graph_del(); graph_clear();
@@ -547,7 +548,7 @@ function create_chains(){
 
 function create_crystal(){
     graph_init(); init_empty();
-    n=500; frac=0.01; 
+    n=500; frac=0.01; frameskip=2;
     vhappy=0.0; noise=0.0;  flock=0.0; epsilon=100; damp=1.0;dt=0.1;
     init_sidelength(39.0); init_circle(frac);   showforce = true; dodraw=false;update_pause();
     dovorticity = false; update_allcontrols(); graph_del(); graph_clear();
