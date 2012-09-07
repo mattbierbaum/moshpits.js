@@ -126,7 +126,8 @@
             <div>
                 <center>
                 <input type='checkbox' id='docircle' value=1 onclick='update_circle()'>Circular ICs --</input>
-                <input type='checkbox' id='vorticity'        onclick='update_vorticity()'>Show Vorticity</input>
+                <input type='checkbox' id='vorticity'        onclick='update_vorticity()'>Show Vorticity --</input>
+                <input type='checkbox' id='music'          onclick='update_music()'>Music</input>
                 </center>
             </div>
 
@@ -155,6 +156,17 @@
         <input type='button' id='init_circlepit' value="Circlepit" onclick='create_circlepit()'></input>
         <input type='button' id='init_chains' value="Force Chains" onclick='create_chains()'></input>
         <input type='button' id='init_crystal' value="Crystal" onclick='create_crystal()'></input>
+
+        <object width="420" height="315">
+            <param name="movie" value="http://www.youtube.com/v/W7wpzKvNhfA?version=3&amp;hl=en_US"></param>
+            <param name="allowFullScreen" value="false"></param>
+            <param name="allowscriptaccess" value="always"></param>
+            <embed id='yt' src="http://www.youtube.com/v/W7wpzKvNhfA?version=3&amp;hl=en_US" 
+                type="application/x-shockwave-flash" 
+                width="10" height="10" allowscriptaccess="always" 
+                allowfullscreen="false">
+            </embed>
+        </object>
     </p></center>
 </div>
 </body>

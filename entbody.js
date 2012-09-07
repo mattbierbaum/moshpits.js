@@ -49,6 +49,7 @@ var dodraw = true;
 var docircle = true;
 var dovorticity = false;
 var showforce = false;
+var playmusic = false;
 
 var MONITOR_GLOBALS=false;
 
@@ -398,6 +399,23 @@ function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked; 
 function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
 function update_force(){ showforce = document.getElementById('showforce').checked; }
 function update_circle(){docircle = document.getElementById('docircle').checked;   }
+
+function update_music() {
+    playmusic = document.getElementById('music').checked;
+    if (playmusic == true) { 
+        var yt = document.getElementById('yt')
+        if (yt.playVideo) {
+            yt.playVideo();
+        } 
+    }
+    else { 
+        var yt = document.getElementById('yt')
+        if (yt.pauseVideo) {
+            yt.pauseVideo(); 
+        }  
+    }
+} 
+
 function update_vorticity(){
     dovorticity = document.getElementById('vorticity').checked;   
     graph_del(); 
@@ -487,6 +505,20 @@ function update_allcontrols(){
     document.getElementById('label_dt').innerHTML      = toFixed(gdt,2);
     document.getElementById('label_frames').innerHTML  = toFixed(frameskip,2);
     document.getElementById('label_frac').innerHTML    = toFixed(frac,2);
+    
+    document.getElementById('music').value = playmusic;
+    if (playmusic == true) { 
+        var yt = document.getElementById('yt')
+        if (yt.playVideo) {
+            yt.playVideo();
+        } 
+    }
+    else { 
+        var yt = document.getElementById('yt')
+        if (yt.pauseVideo) {
+            yt.pauseVideo(); 
+        }  
+    }
 }
 
 function create_moshpit(){
