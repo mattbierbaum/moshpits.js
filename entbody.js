@@ -228,6 +228,10 @@ function update(){
         } else {
             if (y[i] >= ly || y[i] < 0) {y[i] = mymod(y[i], ly);}
         } 
+
+        if (dovorticity == true){
+            graph_vel(Math.sqrt(vx[i]*vx[i]+vy[i]*vy[i]));
+        }
     }
     colavg /= n;
 }

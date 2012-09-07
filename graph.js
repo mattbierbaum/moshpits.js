@@ -1,21 +1,45 @@
 var graph;
 var graphctx;
 var all = [];
-var data = [];
-var maxlen = 100;
 var maxval = 1e-6;
 
+var data   = [];
+var order  = [];
+var maxvs  = 50000;
+var bins   = 1000;
+var maxvel = 1;
+var maxbin = 1;
+
 function graph_push(d){
-    data.push(d);
     all.push(d);
-    if (data.length > maxlen){data.shift();}
     if (Math.abs(d) > maxval) {maxval = Math.abs(d);}
+}
+
+function graph_vel(v){
+    if (v < maxvel){
+        var ind = Math.floor(bins*v/maxvel);
+        order.push(ind);
+        if (order.length > maxvs){
+            if (data[order[0]] == maxbin){maxbin--;}
+            data[order[0]]--;
+            order.shift();
+        }
+        data[ind] += 1;
+        if (data[ind] > maxbin){
+           maxbin = data[ind];
+        }
+    }
 }
 
 function graph_del(){
     data = [];
     all = [];
+    order = [];
     maxval = 1e-6;
+    maxbin = 1;
+    for (var i=0; i<bins; i++){
+        data.push(0);
+    }
 }
 
 function graph_clear(){
@@ -26,13 +50,13 @@ function graph_clear(){
 
 function calcx1(i){return ((graph.width/2 / all.length) * i);}
 function calcy1(d){return graph.height/2 + ((graph.height/2) / maxval) * d; }
-function calcx2(i){return ((graph.width/2 / maxlen) * i) + graph.width/2;}
-function calcy2(d){return graph.height/2 + ((graph.height/2) / maxval) * d; }
+function calcx2(i){return ((graph.width/2 / bins) * i) + graph.width/2;}
+function calcy2(d){return graph.height - ((graph.height) / maxbin) * d; }
 
 function graph_draw(){
     graphctx.beginPath();
     graphctx.moveTo(0, graph.height/2);
-    graphctx.lineTo(graph.width, graph.height/2);
+    graphctx.lineTo(graph.width/2, graph.height/2);
     graphctx.stroke();
 
     graphctx.beginPath();
