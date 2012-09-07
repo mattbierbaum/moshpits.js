@@ -11,7 +11,7 @@ var col=[];
 var colavg;
 
 // things we can change
-var n = 1000;
+var n = 500;
 var pbc = [1,1];
 
 // neighborlist stuff
@@ -40,7 +40,10 @@ var c;
 var ctx;
 var empty;
 var frame = 0;
+var frameskip = 2;
 var dodraw = true;
+var docircle = true;
+var dovorticity = false;
 var showforce = false;
 
 var MONITOR_GLOBALS=false;
@@ -241,6 +244,7 @@ function init_empty(){
     }
     lx = Math.floor(1.03*Math.sqrt(Math.PI*radius*radius*n));
     ly = lx;
+    update_boxslider();
 }
 
 function init_circle(frac){
@@ -254,7 +258,11 @@ function init_circle(frac){
         y[i] = ty;
         var dd = Math.sqrt((tx-lx/2)*(tx-lx/2) + (ty-ly/2)*(ty-ly/2));
         var rad = Math.sqrt(frac*lx*ly/Math.PI);
-        if (dd<rad){ type[i] = 1; }else{ type[i] = 0; }
+        if (docircle==true){
+            if (dd<rad){ type[i] = 1; }else{ type[i] = 0; }
+        } else {
+            if (Math.random() < 0.2){ type[i] = 1;} else {type[i]=0;}
+        }
         vx[i] = vhappy*(Math.random()-0.5);
         vy[i] = vhappy*(Math.random()-0.5);
     }
@@ -264,6 +272,10 @@ function init_circle(frac){
 /*======================================================================
   the javascript interface stuff
 =========================================================================*/
+function update_epsilon(){
+    epsilon = document.getElementById('epsilon').value;
+    document.getElementById('label_epsilon').innerHTML = toFixed(epsilon,2);
+}
 function update_flock(){
     flock = document.getElementById('flock').value;
     document.getElementById('label_flock').innerHTML = toFixed(flock,2);
@@ -280,9 +292,19 @@ function update_boxsize(){
     lx = ly = document.getElementById('boxsize').value;
     document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);
 }
+function update_dt(){
+    gdt = document.getElementById('dt').value;
+    document.getElementById('label_dt').innerHTML = toFixed(gdt, 2);
+}
+function update_frames(){
+    frameskip = document.getElementById('frames').value;
+    document.getElementById('label_frames').innerHTML = toFixed(frameskip, 2);
+}
 function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked;    }
 function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
 function update_force(){ showforce = document.getElementById('showforce').checked; }
+function update_circle(){docircle = document.getElementById('docircle').checked;   }
+function update_vorticity(){dovorticity = document.getElementById('vorticity').checked;   }
 function update_restart(){ init_empty(); init_circle(0.15);}
 
 function update_pause(){
@@ -294,16 +316,21 @@ function update_pause(){
     }
 }
 
+function update_boxslider(){
+    var box = document.getElementById('boxsize');
+    var boxsize = Math.floor(lx);
+    var frac = 0.15
+    box.min = Math.floor(boxsize*(1-frac));
+    box.max = Math.floor(boxsize*(1+frac));
+    box.step = (2*frac*boxsize/20);
+    box.value = boxsize;
+    document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);
+}
+
 function update_num(){
     n = document.getElementById('num').value;
     update_restart();
-    var box = document.getElementById('boxsize');
-    var boxsize = Math.floor(lx);
-    box.min = Math.floor(boxsize*0.93);
-    box.max = Math.floor(boxsize*1.07);
-    box.step = (0.14*boxsize/20);
-    box.value = boxsize;
-    document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);
+    update_boxslider();
 }
 
 /*===============================================================================
@@ -314,7 +341,7 @@ var tick = function(T) {
         ctx.fillStyle = 'rgba(200,200,200,0.2)';
         ctx.clearRect(0, 0, c.width, c.height);
         ctx.fillRect(0,0,c.width,c.height);
-        for (var i=0; i<2; i++){
+        for (var i=0; i<frameskip; i++){
             frame++;
             nbl_bin();
             update();
@@ -339,15 +366,23 @@ var init = function() {
     document.getElementById('num').value = n;
     document.getElementById('periodicx').checked = pbc[0];
     document.getElementById('periodicy').checked = pbc[1];
+    document.getElementById('docircle').checked = docircle
     document.getElementById('showforce').checked = showforce;
+    document.getElementById('vorticity').checked = dovorticity;
+    document.getElementById('epsilon').value = epsilon;
     document.getElementById('flock').value = flock;
     document.getElementById('noise').value = noise;
     document.getElementById('speed').value = vhappy;
     document.getElementById('boxsize').value = lx;
+    document.getElementById('dt').value = gdt;
+    document.getElementById('frames').value = frameskip;
+    document.getElementById('label_epsilon').innerHTML = toFixed(epsilon,2);
     document.getElementById('label_flock').innerHTML   = toFixed(flock,2);
     document.getElementById('label_noise').innerHTML   = toFixed(noise,2);
     document.getElementById('label_speed').innerHTML   = toFixed(vhappy,2);
     document.getElementById('label_boxsize').innerHTML = toFixed(lx,2);
+    document.getElementById('label_dt').innerHTML      = toFixed(gdt,2);
+    document.getElementById('label_frames').innerHTML  = toFixed(frameskip,2);
 
     /* initialize the neighborlist */
     size[0] = Math.floor(lx / FR);
@@ -358,8 +393,6 @@ var init = function() {
     for (var i=0; i<size[0]*size[1]; i++){
         count.push(0)
     }
-
-    /* run the simulation loop */
 
     c.addEventListener('mousemove', function(ev) {
         mx = ev.clientX;
