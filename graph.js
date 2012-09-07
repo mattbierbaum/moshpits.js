@@ -1,6 +1,8 @@
 var graph;
 var graphctx;
+
 var all = [];
+var maxnum = 100000;
 var maxval = 1e-6;
 
 var data   = [];
@@ -12,6 +14,7 @@ var maxbin = 1;
 
 function graph_push(d){
     all.push(d);
+    if (all.length > maxnum){ all.shift(); }
     if (Math.abs(d) > maxval) {maxval = Math.abs(d);}
 }
 
