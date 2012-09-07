@@ -36,12 +36,14 @@ var noise   = 0.0;
 // some other constants that are 1
 var vhappy = 1.0;
 var damp   = 1.0;
+var frac   = 0.15;
 
 // display variables
 var c;
 var ctx;
 var empty;
 var frame = 0;
+var keys = [0,0,0,0];
 var frameskip = 2;
 var dodraw = true;
 var docircle = true;
@@ -197,6 +199,12 @@ function update(){
         }
         colavg += col[i];
 
+        if (type[i] == 1){
+            if (keys[0] == 1) {fy[i] -= 5.0;}
+            if (keys[1] == 1) {fy[i] += 5.0;}
+            if (keys[2] == 1) {fx[i] -= 5.0;}
+            if (keys[3] == 1) {fx[i] += 5.0;}
+        }
     }
 
     for (var i=0; i<n; i++){
@@ -272,6 +280,12 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
     }
 }
 
+function init_sidelength(){
+    lx = Math.floor(1.03*Math.sqrt(Math.PI*radius*radius*n));
+    ly = lx;
+    update_boxslider();
+}    
+
 function init_empty(){
     r = [];
     x = [];
@@ -291,26 +305,28 @@ function init_empty(){
         fy.push(0.0);
         col.push(0.0);
     }
-    lx = Math.floor(1.03*Math.sqrt(Math.PI*radius*radius*n));
-    ly = lx;
-    update_boxslider();
 }
 
-function init_circle(frac){
+function init_circle(){
     for (var i=0; i<n; i++) {
         var tx = lx*Math.random();
         var ty = ly*Math.random();
         var tt = 2*Math.PI*Math.random();
 
+        type[i] = 0;
         r[i] = radius;
         x[i] = tx;
         y[i] = ty;
         var dd = Math.sqrt((tx-lx/2)*(tx-lx/2) + (ty-ly/2)*(ty-ly/2));
         var rad = Math.sqrt(frac*lx*ly/Math.PI);
         if (docircle==true){
-            if (dd<rad){ type[i] = 1; }else{ type[i] = 0; }
+            if (frac==0.01){type[0] =1;} 
+            else if (frac==1.0) {type[i] = 1;}
+            else { if (dd<rad){ type[i] = 1; }else{ type[i] = 0; } }
         } else {
-            if (Math.random() < 0.2){ type[i] = 1;} else {type[i]=0;}
+            if (frac==0.01){type[0] =1;} 
+            else if (frac==1.0) {type[i] = 1;}
+            else { if (Math.random() < frac){ type[i] = 1;} else {type[i]=0;} }
         }
         vx[i] = vhappy*(Math.random()-0.5);
         vy[i] = vhappy*(Math.random()-0.5);
@@ -337,6 +353,10 @@ function update_speed(){
     vhappy = document.getElementById('speed').value;
     document.getElementById('label_speed').innerHTML = toFixed(vhappy,2);
 }
+function update_damp(){
+    damp = document.getElementById('damp').value;
+    document.getElementById('label_damp').innerHTML = toFixed(damp,2);
+}
 function update_boxsize(){
     lx = ly = document.getElementById('boxsize').value;
     document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);
@@ -349,11 +369,15 @@ function update_frames(){
     frameskip = document.getElementById('frames').value;
     document.getElementById('label_frames').innerHTML = toFixed(frameskip, 2);
 }
+function update_frac(){
+    frac = document.getElementById('frac').value;
+    document.getElementById('label_frac').innerHTML = toFixed(frac, 2);
+}
 function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked;    }
 function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
 function update_force(){ showforce = document.getElementById('showforce').checked; }
 function update_circle(){docircle = document.getElementById('docircle').checked;   }
-function update_restart(){ init_empty(); init_circle(0.15);}
+function update_restart(){ init_empty(); init_circle(0.15); graph_del();}
 function update_vorticity(){
     dovorticity = document.getElementById('vorticity').checked;   
     graph_del(); 
@@ -362,8 +386,10 @@ function update_vorticity(){
 
 function update_pause(){
     if (dodraw == true){
+        document.getElementById('pause').value = 'Start';
         dodraw = false;
     } else {
+        document.getElementById('pause').value = 'Pause';
         requestAnimationFrame(tick, c);
         dodraw = true;
     }
@@ -382,6 +408,7 @@ function update_boxslider(){
 
 function update_num(){
     n = document.getElementById('num').value;
+    init_sidelength();
     update_restart();
     update_boxslider();
 }
@@ -420,6 +447,7 @@ var init = function() {
     graph_clear();
 
     init_empty();
+    init_sidelength();
     init_circle(0.15);
 
     document.getElementById('num').value = n;
@@ -432,16 +460,20 @@ var init = function() {
     document.getElementById('flock').value = flock;
     document.getElementById('noise').value = noise;
     document.getElementById('speed').value = vhappy;
+    document.getElementById('damp').value = damp;
     document.getElementById('boxsize').value = lx;
     document.getElementById('dt').value = gdt;
     document.getElementById('frames').value = frameskip;
+    document.getElementById('frac').value = frac;
     document.getElementById('label_epsilon').innerHTML = toFixed(epsilon,2);
     document.getElementById('label_flock').innerHTML   = toFixed(flock,2);
     document.getElementById('label_noise').innerHTML   = toFixed(noise,2);
     document.getElementById('label_speed').innerHTML   = toFixed(vhappy,2);
+    document.getElementById('label_damp').innerHTML    = toFixed(damp,2);
     document.getElementById('label_boxsize').innerHTML = toFixed(lx,2);
     document.getElementById('label_dt').innerHTML      = toFixed(gdt,2);
     document.getElementById('label_frames').innerHTML  = toFixed(frameskip,2);
+    document.getElementById('label_frac').innerHTML    = toFixed(frac,2);
 
     /* initialize the neighborlist */
     size[0] = Math.floor(lx / FR);
@@ -453,18 +485,20 @@ var init = function() {
         count.push(0)
     }
 
-    c.addEventListener('mousemove', function(ev) {
-        mx = ev.clientX;
-        my = ev.clientY;
+    document.body.addEventListener('keyup', function(ev) {
+        if (ev.keyCode == 87){ keys[0] = 0; } //up
+        if (ev.keyCode == 83){ keys[1] = 0; } //down
+        if (ev.keyCode == 65){ keys[2] = 0; } //left
+        if (ev.keyCode == 68){ keys[3] = 0; } //right
+        if (ev.keyCode == 32){ update_pause(); } //space is pause
+        if (ev.keyCode == 82){ update_restart(); } //r is restart
     }, false);
 
-    c.addEventListener('click', function(ev) {
-        ev.preventDefault();
-    }, false);
-
-    c.addEventListener('mouseout', function(ev) {
-        mx = -1;
-        my = -1;
+    document.body.addEventListener('keydown', function(ev) {
+        if (ev.keyCode == 87){ keys[0] = 1; } //up
+        if (ev.keyCode == 83){ keys[1] = 1; } //down
+        if (ev.keyCode == 65){ keys[2] = 1; } //left
+        if (ev.keyCode == 68){ keys[3] = 1; } //right
     }, false);
 
     registerAnimationRequest();

@@ -72,12 +72,12 @@
         <div id='panel'>
             <div>
                 <label for="epsilon">Hard sphere</label>
-                <input type="range" id="epsilon" min=0 max=300.0 step=1 value=5 onchange="update_epsilon()"></input>
+                <input type="range" id="epsilon" min=1 max=300.0 step=1 value=5 onchange="update_epsilon()"></input>
                 <span id="label_epsilon"></span>
             </div>
             <div>
                 <label for="flock">Flock strength</label>
-                <input type="range" id="flock" min=0 max=3.0 step=0.1 value=0.5 onchange="update_flock()"></input>
+                <input type="range" id="flock" min=0 max=5.0 step=0.1 value=0.5 onchange="update_flock()"></input>
                 <span id="label_flock"></span>
             </div>
             <div>
@@ -91,6 +91,11 @@
                 <span id="label_speed"></span>
             </div>
             <div>
+                <label for="damp">Damping</label>
+                <input type="range" id="damp" min=0 max=5.0 step=0.05 value=0.0 onchange="update_damp()"></input>
+                <span id="label_damp"></span>
+            </div>
+            <div>
                 <label for="boxsize">Box size</label>
                 <input type="range" id="boxsize" min=50 max=70 step=1.0 value=0.0 onchange="update_boxsize()"></input>
                 <span id="label_boxsize"></span>
@@ -102,8 +107,13 @@
             </div>
             <div>
                 <label for="frames">Frameskip</label>
-                <input type="range" id="frames" min=1 max=10 step=1 value=0.0 onchange="update_frames()"></input>
+                <input type="range" id="frames" min=1 max=20 step=1 value=0.0 onchange="update_frames()"></input>
                 <span id="label_frames"></span>
+            </div>
+            <div>
+                <label for="frac">Fraction Red</label>
+                <input type="range" id="frac" min=0.0 max=1.0 step=0.01 value=0.0 onchange="update_frac()"></input>
+                <span id="label_frac"></span>
             </div>
 
             <br/>
@@ -114,8 +124,6 @@
                 <input type='checkbox' id='showforce' value=1 onclick='update_force()'>Show forces</input>
                 </center>
             </div>
-
-            <br/>
             <div>
                 <center>
                 <input type='checkbox' id='docircle' value=1 onclick='update_circle()'>Circular ICs</input>
@@ -131,11 +139,10 @@
                 <input type='button' value='Change' onclick='update_num()'></input>
             </div>
 
-            <br/>
             <div>
                 <center>
-                <input type='button' value='Pause'   onclick='update_pause()'></input>
-                <input type='button' value='Restart' onclick='update_restart()'></input>
+                <input type='button' id='pause' value='Pause'   onclick='update_pause()'></input>
+                <input type='button' id='restart' value='Restart' onclick='update_restart()'></input>
                 </center>
             </div>
         </div>

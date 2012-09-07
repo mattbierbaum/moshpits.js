@@ -1,17 +1,20 @@
 var graph;
 var graphctx;
+var all = [];
 var data = [];
-var maxlen = 1000;
+var maxlen = 100;
 var maxval = 1e-6;
 
 function graph_push(d){
     data.push(d);
+    all.push(d);
     if (data.length > maxlen){data.shift();}
     if (Math.abs(d) > maxval) {maxval = Math.abs(d);}
 }
 
 function graph_del(){
     data = [];
+    all = [];
     maxval = 1e-6;
 }
 
@@ -21,13 +24,10 @@ function graph_clear(){
     graphctx.fillRect(0,0, graph.width, graph.height);
 }
 
-function calcx(i){
-    return ((graph.width / maxlen) * i);
-}
-
-function calcy(d){
-    return graph.height/2 + ((graph.height/2) / maxval) * d; 
-}
+function calcx1(i){return ((graph.width/2 / all.length) * i);}
+function calcy1(d){return graph.height/2 + ((graph.height/2) / maxval) * d; }
+function calcx2(i){return ((graph.width/2 / maxlen) * i) + graph.width/2;}
+function calcy2(d){return graph.height/2 + ((graph.height/2) / maxval) * d; }
 
 function graph_draw(){
     graphctx.beginPath();
@@ -35,10 +35,21 @@ function graph_draw(){
     graphctx.lineTo(graph.width, graph.height/2);
     graphctx.stroke();
 
+    graphctx.beginPath();
+    graphctx.moveTo(graph.width/2, 0); 
+    graphctx.lineTo(graph.width/2, graph.height);
+    graphctx.stroke();
+
     for (var i=0; i<data.length-1; i++){
         graphctx.beginPath();   
-        graphctx.moveTo(calcx(i),   calcy(data[i])  );
-        graphctx.lineTo(calcx(i+1), calcy(data[i+1]));
+        graphctx.moveTo(calcx2(i),   calcy2(data[i])  );
+        graphctx.lineTo(calcx2(i+1), calcy2(data[i+1]));
+        graphctx.stroke();
+    }
+    for (var i=0; i<all.length-1; i++){
+        graphctx.beginPath();   
+        graphctx.moveTo(calcx1(i),   calcy1(all[i])  );
+        graphctx.lineTo(calcx1(i+1), calcy1(all[i+1]));
         graphctx.stroke();
     }
 }
