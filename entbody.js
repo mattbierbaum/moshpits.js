@@ -248,7 +248,7 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
         var cr,cg,cb;
         if (type[i] == 0){
             if (showforce == true){
-                cr = Math.floor(255*col[i]/(4*colavg)+10);
+                cr = Math.floor(255*col[i]/(4*colavg+1e-5)+10);
                 if (cr > 255) {cr = 255;}
                 cg = cr;
                 cb = cr;
@@ -489,7 +489,7 @@ function create_moshpit(){
     graph_init(); init_empty();
     n=500; frac=0.15; 
     vhappy=1.0; noise=2.0;  flock=0.1; epsilon=100; damp=1.0;dt=0.1;
-    init_circle(frac);  init_sidelength(calc_sidelength());  dovorticity = true;
+    init_sidelength(calc_sidelength()); init_circle(frac);   dovorticity = true; dodraw=false;update_pause();
     showforce = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
@@ -497,15 +497,15 @@ function create_circlepit(){
     graph_init(); init_empty();
     n=500; frac=0.15; 
     vhappy=1.0; noise=0.3;  flock=1.0; epsilon=100; damp=1.0;dt=0.1;
-    init_circle(frac);  init_sidelength(calc_sidelength());  dovorticity = true;
+    init_sidelength(calc_sidelength()); init_circle(frac);   dovorticity = true; dodraw=false;update_pause();
     showforce = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
 function create_chains(){
     graph_init(); init_empty();
-    n=500; frac=0.01; 
+    n=500; frac=0.01; frameskip=3;
     vhappy=1.0; noise=0.0;  flock=0.0; epsilon=150; damp=1.0;dt=0.1;
-    init_circle(frac);  init_sidelength(48);  showforce = true;
+    init_sidelength(48); init_circle(frac);   showforce = true; dodraw=false;update_pause();
     dovorticity = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
@@ -513,7 +513,7 @@ function create_crystal(){
     graph_init(); init_empty();
     n=500; frac=0.01; 
     vhappy=0.0; noise=0.0;  flock=0.0; epsilon=100; damp=1.0;dt=0.1;
-    init_circle(frac);  init_sidelength(39.0);  showforce = true;
+    init_sidelength(39.0); init_circle(frac);   showforce = true; dodraw=false;update_pause();
     dovorticity = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
