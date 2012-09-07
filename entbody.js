@@ -9,6 +9,8 @@ var r=[];
 var type=[];
 var col=[];
 var colavg;
+var ivor=[];
+var ivoravg;
 
 // things we can change
 var n = 500;
@@ -49,7 +51,7 @@ var showforce = false;
 var MONITOR_GLOBALS=false;
 
 function rgb(r,g,b) {
-    return 'rgb('+r+','+b+','+g+')';
+    return 'rgb('+r+','+g+','+b+')';
 }
 
 function toFixed(value, precision) {
@@ -107,9 +109,11 @@ function calc_vorticity(){
             var tvy = vy[i];
             var tv = tvx*ty - tvy*tx;
             vor += tv;//sqrt(tx*tx+ty*ty);
+            ivor[i] = tv;
         }
     }
 
+    ivoravg = vor/count;
     return -vor/count;
 }
 
@@ -234,7 +238,7 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
         var cr,cg,cb;
         if (type[i] == 0){
             if (showforce == true){
-                cr = Math.floor(255*col[i]/(5*colavg));
+                cr = Math.floor(255*col[i]/(4*colavg));
                 if (cr > 255) {cr = 255;}
                 cg = cr;
                 cb = cr;
@@ -244,6 +248,16 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
                 cb = 50;
             }
         } else {
+            /*if (dovorticity == true){
+                if (ivor[i] < 0){
+                    cr = Math.floor(Math.abs(255*ivor[i]/(4*ivoravg)));
+                    cb = 0;
+                } else {
+                    cb = Math.floor(Math.abs(255*ivor[i]/(4*ivoravg)));
+                    cr = 0;
+                }
+                cg = 0;
+            } else {*/
             cr = 255;
             cg = 0;
             cb = 0;
