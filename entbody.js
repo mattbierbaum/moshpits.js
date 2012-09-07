@@ -538,7 +538,7 @@ var init = function() {
         if (ev.keyCode == 83){ keys[1] = 0; } //down
         if (ev.keyCode == 65){ keys[2] = 0; } //left
         if (ev.keyCode == 68){ keys[3] = 0; } //right
-        if (ev.keyCode == 32){ update_pause(); } //space is pause
+        if (ev.keyCode == 32){ ev.preventDefault(); update_pause(); } //space is pause
         if (ev.keyCode == 82){ update_restart(); } //r is restart
     }, false);
 
