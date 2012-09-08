@@ -553,6 +553,8 @@ function create_crystal(){
     dovorticity = false; update_allcontrols(); graph_del(); graph_clear();
 }
 
+function reverse() { for (var i=0; i<n; i++){ vx[i] = -vx[i]; vy[i] = -vy[i];} }
+
 var init = function() {
     // create the canvas element
     empty = document.createElement('canvas');
@@ -576,6 +578,7 @@ var init = function() {
         if (ev.keyCode == 68){ keys[3] = 0; } //right
         if (ev.keyCode == 32){ ev.preventDefault(); update_pause(); } //space is pause
         if (ev.keyCode == 82){ update_restart(); } //r is restart
+        if (ev.keyCode == 84){ reverse();  } //t reverses time
     }, false);
 
     document.body.addEventListener('keydown', function(ev) {

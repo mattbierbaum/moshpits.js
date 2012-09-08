@@ -12,8 +12,8 @@ var increment = 50;
 
 var data   = [];
 var order  = [];
-var maxvs  = 50000;
-var bins   = 1000;
+var maxvs  = 40000;
+var bins   = 500;
 var maxvel = 1;
 var maxbin = 1;
 
