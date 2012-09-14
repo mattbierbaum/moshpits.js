@@ -1,0 +1,59 @@
+#big {
+    margin: 0 auto;
+    width: 810px;
+}
+
+#entbody {
+    float: left;
+    color: red;
+    width: 400px;
+    height: 400px;
+    position: 'absolute';
+    left: 10px;
+    top: 10px;
+    border: 1px solid black;
+}
+
+#graphpanel {
+    float: left;
+    width: 802px;
+    height: 100px;
+    position: 'absolute';   
+    left: 10px;
+    top: 410px;
+    border: 1px solid black;
+}
+
+#panelcontainer {
+    float: left;
+    left: 220px;
+    top: 10px;
+    width: 400px;
+    height: 400px;
+    border: solid 1px black;
+
+}
+
+#panel {
+    padding: 15px;
+}
+
+
+.eb_label  {
+    position: relative; 
+    padding-right: 6px;
+    width: 7em; 
+    float: left;
+    text-align: right;
+}
+
+.eb_span  {
+    position: relative;
+    top: -6px;
+}
+
+#tiny_yt {
+    position: relative;
+    top: 8px;
+}
+

@@ -2,68 +2,7 @@
 <head>
 <script src="graph.js"></script>
 <script src="entbody.js"></script>
-
-<style type="text/css">
-    #big {
-        margin: 0 auto;
-        width: 810px;
-    }
-
-    #entbody {
-        float: left;
-        color: red;
-        width: 400px;
-        height: 400px;
-        position: 'absolute';
-        left: 10px;
-        top: 10px;
-        border: 1px solid black;
-    }
-
-    #graphpanel {
-        float: left;
-        width: 802px;
-        height: 100px;
-        position: 'absolute';   
-        left: 10px;
-        top: 410px;
-        border: 1px solid black;
-    }
-
-    #panelcontainer {
-        float: left;
-        left: 220px;
-        top: 10px;
-        width: 400px;
-        height: 400px;
-        border: solid 1px black;
-
-    }
-
-    #panel {
-        padding: 15px;
-    }
-
-
-    label {
-        position: relative; 
-        padding-right: 6px;
-        width: 7em; 
-        float: left;
-        text-align: right;
-    }
-
-    span {
-        position: relative;
-        top: -6px;
-    }
-    
-    #tiny_yt {
-        position: relative;
-        top: 8px;
-    }
-</style>
-
+<link rel="stylesheet" href="style.css">
 
 <title>Moshpits.js</title>
 </head>
@@ -77,49 +16,49 @@
         <!-- ===================  add control panel items between here ============== -->
         <div id='panel'>
             <div>
-                <label for="epsilon">Hard sphere</label>
+                <label class='eb_label' for="epsilon">Hard sphere</label>
                 <input type="range" id="epsilon" min=1 max=300.0 step=1 value=5 onchange="update_epsilon()"></input>
-                <span id="label_epsilon"></span>
+                <span class='eb_span' id="label_epsilon"></span>
             </div>
             <div>
-                <label for="flock">Flock strength</label>
+                <label class='eb_label' for="flock">Flock strength</label>
                 <input type="range" id="flock" min=0 max=5.0 step=0.1 value=0.5 onchange="update_flock()"></input>
-                <span id="label_flock"></span>
+                <span class='eb_span' id="label_flock"></span>
             </div>
             <div>
-                <label for="noise">Noise strength</label>
+                <label class='eb_label' for="noise">Noise strength</label>
                 <input type="range" id="noise" min=0 max=10.0 step=0.2 value=0.0 onchange="update_noise()"></input>
-                <span id="label_noise"></span>
+                <span class='eb_span' id="label_noise"></span>
             </div>
             <div>
-                <label for="speed">Speed</label>
+                <label class='eb_label' for="speed">Speed</label>
                 <input type="range" id='speed' min=0 max=5.0 step=0.25 value=0.0 onchange="update_speed()"></input>
-                <span id="label_speed"></span>
+                <span class='eb_span' id="label_speed"></span>
             </div>
             <div>
-                <label for="damp">Damping</label>
+                <label class='eb_label' for="damp">Damping</label>
                 <input type="range" id="damp" min=0 max=5.0 step=0.05 value=0.0 onchange="update_damp()"></input>
-                <span id="label_damp"></span>
+                <span class='eb_span' id="label_damp"></span>
             </div>
             <div>
-                <label for="boxsize">Box size</label>
+                <label class='eb_label' for="boxsize">Box size</label>
                 <input type="range" id="boxsize" min=10 max=100 step=0.2 value=0.0 onchange="update_boxsize()"></input>
-                <span id="label_boxsize"></span>
+                <span class='eb_span' id="label_boxsize"></span>
             </div>
             <div>
-                <label for="dt">Delta t</label>
+                <label class='eb_label' for="dt">Delta t</label>
                 <input type="range" id="dt" min=0.01 max=0.2 step=0.01 value=0.0 onchange="update_dt()"></input>
-                <span id="label_dt"></span>
+                <span class='eb_span' id="label_dt"></span>
             </div>
             <div>
-                <label for="frames">Frameskip</label>
+                <label class='eb_label' for="frames">Frameskip</label>
                 <input type="range" id="frames" min=1 max=20 step=1 value=0.0 onchange="update_frames()"></input>
-                <span id="label_frames"></span>
+                <span class='eb_span' id="label_frames"></span>
             </div>
             <div>
-                <label for="frac">Fraction Red</label>
+                <label class='eb_label' for="frac">Fraction Red</label>
                 <input type="range" id="frac" min=0.0 max=1.0 step=0.01 value=0.0 onchange="update_frac()"></input>
-                <span id="label_frac"></span>
+                <span class='eb_span' id="label_frac"></span>
             </div>
 
             <div>
@@ -140,7 +79,7 @@
             <br/>
             <div>
                 <center>
-                <label for='num'>Particle count</label>
+                <label class='eb_label' for='num'>Particle count</label>
                 <input type='text' id='num' value=0></input>
                 <input type='button' value='Change' onclick='update_num()'></input>
             </div>
@@ -163,13 +102,13 @@
         <input type='button' id='init_chains' value="Force Chains" onclick='create_chains()'></input>
         <input type='button' id='init_crystal' value="Crystal" onclick='create_crystal()'></input>
 
-        <span id='tiny_yt'>
+        <span class='eb_span' id='tiny_yt'>
         <object id='yt' type="application/x-shockwave-flash" width="150" height="25" 
             data="https://www.youtube-nocookie.com/v/W7wpzKvNhfA?version=2&enablejsapi=1&theme=dark">
             <param name="movie" value="https://www.youtube-nocookie.com/v/W7wpzKvNhfA?version=2&enablejsapi=1&theme=dark" />
             <param name="wmode" value="transparent" />
         </object>
-        </span>
+        </span class='eb_span'>
     </p></center>
 </div>
 </body>
