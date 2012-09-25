@@ -1,6 +1,8 @@
 #big {
     margin: 0 auto;
     width: 810px;
+    padding: 0px;
+    line-height: 1em;
 }
 
 #entbody {

@@ -45,6 +45,7 @@ var empty;
 var frame = 0;
 var keys = [0,0,0,0];
 var frameskip = 2;
+var colscale=25;
 var dodraw = true;
 var docircle = true;
 var dovorticity = false;
@@ -169,7 +170,7 @@ function update(){
                         fx[i] += c0*dx;
                         fy[i] += c0*dy;
 
-                        var tcol = fx[i]*fx[i] + fy[i]*fy[i];
+                        var tcol = c0*c0*dx*dx + c0*c0*dy*dy;//fx[i]*fx[i] + fy[i]*fy[i];
                         col[i] += tcol;
                     }
                     if (type[i] == 1 && type[j] == 1 && l > 1e-6 && l < FR){
@@ -253,8 +254,12 @@ function draw_all(x, y, r, lx, ly, cw, ch, ctx) {
         var cr,cg,cb;
         if (type[i] == 0){
             if (showforce == true){
-                cr = Math.floor(255*col[i]/(4*colavg+1e-5)+10);
-                if (cr > 255) {cr = 255;}
+                //cr = Math.floor(255*col[i]/(4*colavg+1e-5)+10);
+                //if (cr > 255) {cr = 255;}
+                cr = Math.abs(col[i]/colscale);
+                if (cr < 0) {cr = 0.0;}
+                if (cr > 1) {cr = 1.0;}
+                cr = Math.floor(255*cr);
                 cg = cr;
                 cb = cr;
             } else {
@@ -395,6 +400,10 @@ function update_frac(){
     frac = document.getElementById('frac').value;
     document.getElementById('label_frac').innerHTML = toFixed(frac, 2);
 }
+function update_colscale(){
+    colscale = document.getElementById('colscale').value;
+    document.getElementById('label_colscale').innerHTML = toFixed(colscale, 2);
+}
 function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked;    }
 function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
 function update_force(){ showforce = document.getElementById('showforce').checked; }
@@ -496,15 +505,17 @@ function update_allcontrols(){
     document.getElementById('dt').value = gdt;
     document.getElementById('frames').value = frameskip;
     document.getElementById('frac').value = frac;
-    document.getElementById('label_epsilon').innerHTML = toFixed(epsilon,2);
-    document.getElementById('label_flock').innerHTML   = toFixed(flock,2);
-    document.getElementById('label_noise').innerHTML   = toFixed(noise,2);
-    document.getElementById('label_speed').innerHTML   = toFixed(vhappy,2);
-    document.getElementById('label_damp').innerHTML    = toFixed(damp,2);
-    document.getElementById('label_boxsize').innerHTML = toFixed(lx,2);
-    document.getElementById('label_dt').innerHTML      = toFixed(gdt,2);
-    document.getElementById('label_frames').innerHTML  = toFixed(frameskip,2);
-    document.getElementById('label_frac').innerHTML    = toFixed(frac,2);
+    document.getElementById('colscale').value = colscale;
+    document.getElementById('label_epsilon').innerHTML  = toFixed(epsilon,2);
+    document.getElementById('label_flock').innerHTML    = toFixed(flock,2);
+    document.getElementById('label_noise').innerHTML    = toFixed(noise,2);
+    document.getElementById('label_speed').innerHTML    = toFixed(vhappy,2);
+    document.getElementById('label_damp').innerHTML     = toFixed(damp,2);
+    document.getElementById('label_boxsize').innerHTML  = toFixed(lx,2);
+    document.getElementById('label_dt').innerHTML       = toFixed(gdt,2);
+    document.getElementById('label_frames').innerHTML   = toFixed(frameskip,2);
+    document.getElementById('label_frac').innerHTML     = toFixed(frac,2);
+    document.getElementById('label_colscale').innerHTML = toFixed(colscale,2);
     
     /*document.getElementById('music').value = playmusic;
     if (playmusic == true) { 
