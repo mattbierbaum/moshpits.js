@@ -1,0 +1,88 @@
+<html>
+<head>
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38463781-1']);
+    _gaq.push(['_trackPageview']);
+    
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<link rel="stylesheet" href="style.css">
+
+<title>Moshpits.js - help</title>
+</head>
+<body>
+    <div id='big'>
+    <center><h1>Moshpits Simulation</h1></center>
+        <div id='helpcontainer'>
+        <!-- ===================  add control panel items between here ============== -->
+        <div id='panel'>
+            <div id="helptext">
+                <label class='help_label' for="epsilon">Soft sphere - </label>
+                <span> how elastic the MASHers appear to one another.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="flock">Flock strength - </label>
+                <span > how strongly MASHers tend to follow others.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="noise">Noise strength - </label>
+                <span > how random their motion is (without collisions)</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="speed">Speed - </label>
+                <span> how fast the participants want to run.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="damp">Damping - </label>
+                <span> sets the timescale to reach the desired speed.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="boxsize">Box size - </label>
+                <span > the physical system size.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="dt">Delta t - </label>
+                <span> the integration timestep.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="frames">Frameskip - </label>
+                <span> how many integration timesteps to skip between redraw.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="frac">Fraction Red - </label>
+                <span> how many participants are active MASHers.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="colscale">Color Scale - </label>
+                <span> sets the scale for the force colors.</span>
+            </div>
+
+            <div id="helptext">
+                <label class='help_label' for="colscale">{x,y}-periodic - </label>
+                <span> enforces periodic boundary conditions on each axis.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="colscale">Show forces - </label>
+                <span> whether or not to show the forces on each particle.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="colscale">Circular ICs - </label>
+                <span> when restarted, whether to begin with a circle of active MASHers.</span>
+            </div>
+            <div id="helptext">
+                <label class='help_label' for="colscale">Show Graphs - </label>
+                <span> whether to calculate and display graphs at the bottom.</span>
+            </div>
+        
+        </div>
+        <!-- ==========================   and here ================================= -->
+    </div>
+</div>
+</body>
+</html>

@@ -28,7 +28,7 @@
         <!-- ===================  add control panel items between here ============== -->
         <div id='panel'>
             <div>
-                <label class='eb_label' for="epsilon">Hard sphere</label>
+                <label class='eb_label' for="epsilon">Soft sphere</label>
                 <input type="range" id="epsilon" min=1 max=300.0 step=1 value=5 onchange="update_epsilon()"></input>
                 <span class='eb_span' id="label_epsilon"></span>
             </div>
@@ -88,7 +88,7 @@
             <div>
                 <center>
                 <input type='checkbox' id='docircle' value=1 onclick='update_circle()'>Circular ICs --</input>
-                <input type='checkbox' id='vorticity'        onclick='update_vorticity()'>Show Vorticity</input>
+                <input type='checkbox' id='vorticity'        onclick='update_vorticity()'>Show Graphs</input>
                 <!--<input type='checkbox' id='music'          onclick='update_music()'>Music</input>-->
                 </center>
             </div>
@@ -136,7 +136,8 @@
     </p><p>Play around.  The buttoms above set up interesting initial conditions while the
     sliders allow you to control the parameters of the model. The keys WASD allow you to 
     apply external forces to active MASHers.  The graphs, as listed from the left, are 
-    a time average of the angular momentum, the current angular momentum, and the speed distribution.</p>
+    a time average of the angular momentum, the current angular momentum, and the speed distribution. 
+    Read the <a href='help.html'>help</a> for more information.</p>
 </div>
 </body>
 </html>
