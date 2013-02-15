@@ -51,6 +51,10 @@
     padding: 15px;
 }
 
+#slider {
+    width: 100px;
+}
+
 #helptext {
     padding-left: 25px;
     padding-bottom: 10px;
