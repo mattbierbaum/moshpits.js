@@ -444,5 +444,3 @@ if (MONITOR_GLOBALS) {
     })();
 }
 
-
-
