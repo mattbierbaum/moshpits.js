@@ -26,12 +26,12 @@ var count = [];
 var radius = 1.0;
 var R = 2*radius;
 var FR= 2*R;
-var gdt = 0.1;
+var gdt = 0.09;
 
 // the variables we change
 var epsilon = 100;
-var flock   = 0.55;
-var noise   = 0.0;
+var flock   = 1.00;
+var noise   = 0.3;
 
 // some other constants that are 1
 var vhappy = 1.0;
