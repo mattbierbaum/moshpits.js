@@ -26,7 +26,7 @@ var count = [];
 var radius = 1.0;
 var R = 2*radius;
 var FR= 2*R;
-var gdt = 0.09;
+var gdt = 0.1;
 
 // the variables we change
 var epsilon = 100;
@@ -48,7 +48,10 @@ var frameskip = 2;
 var colscale=25;
 var dodraw = true;
 var docircle = true;
+var dovorticity = false;
 var showforce = false;
+var playmusic = false;
+var showcontrol = false;
 
 var MONITOR_GLOBALS=false;
 
@@ -86,6 +89,38 @@ function mod_rvec(a, b, p, image, iind){
     return a;
 }
 
+
+function calc_vorticity(){
+    var vor = 0.0;
+    var cmx = 0.0;
+    var cmy = 0.0;
+    var count = 0;
+
+    for (var i=0; i<n; i++){
+        if (type[i] == 1){
+            cmx += x[i];
+            cmy += y[i];
+            count++;
+        }
+    }
+    cmx /= count;
+    cmy /= count;
+
+    for (var i=0; i<n; i++){
+        if (type[i] == 1){
+            var tx = x[i] - cmx;
+            var ty = y[i] - cmy;
+            var tvx = vx[i];
+            var tvy = vy[i];
+            var tv = tvx*ty - tvy*tx;
+            vor += tv;//sqrt(tx*tx+ty*ty);
+            ivor[i] = tv;
+        }
+    }
+
+    ivoravg = vor/count;
+    return -vor/count;
+}
 
 function nbl_bin(){
     for (var i=0; i<size[0]*size[1]; i++){
@@ -196,6 +231,7 @@ function update(){
         } else {
             if (y[i] >= ly || y[i] < 0) {y[i] = mymod(y[i], ly);}
         } 
+
     }
     colavg /= n;
 }
@@ -321,6 +357,71 @@ function init_circle(){
 /*======================================================================
   the javascript interface stuff
 =========================================================================*/
+function update_epsilon(){
+    epsilon = document.getElementById('epsilon').value;
+    document.getElementById('label_epsilon').innerHTML = toFixed(epsilon,2);
+}
+function update_flock(){
+    flock = document.getElementById('flock').value;
+    document.getElementById('label_flock').innerHTML = toFixed(flock,2);
+}
+function update_noise(){
+    noise = document.getElementById('noise').value;
+    document.getElementById('label_noise').innerHTML = toFixed(noise,2);
+}
+function update_speed(){
+    vhappy = document.getElementById('speed').value;
+    document.getElementById('label_speed').innerHTML = toFixed(vhappy,2);
+}
+function update_damp(){
+    damp = document.getElementById('damp').value;
+    document.getElementById('label_damp').innerHTML = toFixed(damp,2);
+}
+function update_boxsize(){
+    lx = ly = document.getElementById('boxsize').value;
+    document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);
+}
+function update_dt(){
+    gdt = document.getElementById('dt').value;
+    document.getElementById('label_dt').innerHTML = toFixed(gdt, 2);
+}
+function update_frames(){
+    frameskip = document.getElementById('frames').value;
+    document.getElementById('label_frames').innerHTML = toFixed(frameskip, 2);
+}
+function update_frac(){
+    frac = document.getElementById('frac').value;
+    document.getElementById('label_frac').innerHTML = toFixed(frac, 2);
+}
+function update_colscale(){
+    colscale = document.getElementById('colscale').value;
+    document.getElementById('label_colscale').innerHTML = toFixed(colscale, 2);
+}
+function update_pbcx(){  pbc[0] = document.getElementById('periodicx').checked;    }
+function update_pbcy(){  pbc[1] = document.getElementById('periodicy').checked;    }
+function update_force(){ showforce = document.getElementById('showforce').checked; }
+function update_circle(){docircle = document.getElementById('docircle').checked;   }
+
+/*function update_music() {
+    playmusic = document.getElementById('music').checked;
+    if (playmusic == true) { 
+        var yt = document.getElementById('yt')
+        if (yt.playVideo) {
+            yt.playVideo();
+        } 
+    }
+    else { 
+        var yt = document.getElementById('yt')
+        if (yt.pauseVideo) {
+            yt.pauseVideo(); 
+        }  
+    }
+}*/
+
+function update_vorticity(){
+    dovorticity = document.getElementById('vorticity').checked;   
+}
+
 function update_restart(){ 
     init_empty(); 
     init_circle(frac); 
@@ -338,7 +439,33 @@ function update_pause(){
     }
 }
 
+function update_controls(){
+    if (showcontrol == true){
+        document.getElementById('controls').value = 'Show controls';
+        document.getElementById('entbody').style.width = '400px';
+        document.getElementById('canvas').style.dislpay = 'block';
+        document.getElementById('panelcontainer').style.width = '0px';
+        document.getElementById('panelcontainer').style.display = 'none';
+        showcontrol = false;
+    } else {
+        document.getElementById('controls').value = 'Hide controls';
+        document.getElementById('entbody').style.width = '0px';
+        document.getElementById('canvas').style.dislpay = 'none';
+        document.getElementById('panelcontainer').style.width = '400px';
+        document.getElementById('panelcontainer').style.display = 'block';
+        showcontrol = true;
+    }
+}
+
 function update_boxslider(){
+/*    var box = document.getElementById('boxsize');
+    var boxsize = Math.floor(lx);
+    var frac = 0.15
+    box.min = Math.floor(boxsize*(1-frac));
+    box.max = Math.floor(boxsize*(1+frac));
+    box.step = (2*frac*boxsize/20);
+    box.value = boxsize;
+    document.getElementById('label_boxsize').innerHTML = toFixed(lx, 2);*/
 }
 
 function update_num(){
@@ -356,16 +483,93 @@ var tick = function(T) {
         ctx.fillStyle = 'rgba(200,200,200,0.2)';
         ctx.clearRect(0, 0, c.width, c.height);
         ctx.fillRect(0,0,c.width,c.height);
-        for (var i=0; i<frameskip; i++){
-            frame++;
-            nbl_bin();
-            update();
-        }
+        
+        if (showcontrol == false){
+            for (var i=0; i<frameskip; i++){
+                frame++;
+                nbl_bin();
+                update();
+            }
  
-        draw_all(x, y, r, lx, ly, c.width, c.height, ctx);
+            draw_all(x, y, r, lx, ly, c.width, c.height, ctx);
+        }
         requestAnimationFrame(tick, c);
     }
 };
+
+function update_allcontrols(){
+    document.getElementById('num').value = n;
+    document.getElementById('periodicx').checked = pbc[0];
+    document.getElementById('periodicy').checked = pbc[1];
+    document.getElementById('docircle').checked = docircle
+    document.getElementById('showforce').checked = showforce;
+    document.getElementById('epsilon').value = epsilon;
+    document.getElementById('flock').value = flock;
+    document.getElementById('noise').value = noise;
+    document.getElementById('speed').value = vhappy;
+    document.getElementById('damp').value = damp;
+    document.getElementById('boxsize').value = lx;
+    document.getElementById('dt').value = gdt;
+    document.getElementById('frames').value = frameskip;
+    document.getElementById('frac').value = frac;
+    document.getElementById('colscale').value = colscale;
+    document.getElementById('label_epsilon').innerHTML  = toFixed(epsilon,2);
+    document.getElementById('label_flock').innerHTML    = toFixed(flock,2);
+    document.getElementById('label_noise').innerHTML    = toFixed(noise,2);
+    document.getElementById('label_speed').innerHTML    = toFixed(vhappy,2);
+    document.getElementById('label_damp').innerHTML     = toFixed(damp,2);
+    document.getElementById('label_boxsize').innerHTML  = toFixed(lx,2);
+    document.getElementById('label_dt').innerHTML       = toFixed(gdt,2);
+    document.getElementById('label_frames').innerHTML   = toFixed(frameskip,2);
+    document.getElementById('label_frac').innerHTML     = toFixed(frac,2);
+    document.getElementById('label_colscale').innerHTML = toFixed(colscale,2);
+    
+    /*document.getElementById('music').value = playmusic;
+    if (playmusic == true) { 
+        var yt = document.getElementById('yt')
+        if (yt.playVideo) {
+            yt.playVideo();
+        } 
+    }
+    else { 
+        var yt = document.getElementById('yt')
+        if (yt.pauseVideo) {
+            yt.pauseVideo(); 
+        }  
+    }*/
+}
+
+function create_moshpit(){
+     init_empty();
+    n=500; frac=0.15; frameskip = 2;
+    vhappy=1.0; noise=2.0;  flock=0.1; epsilon=100; damp=1.0;dt=0.1;
+    init_sidelength(calc_sidelength()); init_circle(frac);   dovorticity = true; dodraw=false;update_pause();
+    showforce = false; update_allcontrols(); 
+}
+
+function create_circlepit(){
+     init_empty();
+    n=500; frac=0.15; frameskip = 2; 
+    vhappy=1.0; noise=0.3;  flock=1.0; epsilon=100; damp=1.0;dt=0.1;
+    init_sidelength(calc_sidelength()); init_circle(frac);   dovorticity = true; dodraw=false;update_pause();
+    showforce = false; update_allcontrols(); 
+}
+
+function create_chains(){
+    init_empty();
+    n=500; frac=0.01; frameskip=3;
+    vhappy=1.0; noise=0.0;  flock=0.0; epsilon=150; damp=1.0;dt=0.1;
+    init_sidelength(48); init_circle(frac);   showforce = true; dodraw=false;update_pause();
+    dovorticity = false; update_allcontrols(); 
+}
+
+function create_crystal(){
+    init_empty();
+    n=500; frac=0.01; frameskip=2;
+    vhappy=0.0; noise=0.0;  flock=0.0; epsilon=100; damp=1.0;dt=0.1;
+    init_sidelength(39.0); init_circle(frac);   showforce = true; dodraw=false;update_pause();
+    dovorticity = false; update_allcontrols(); 
+}
 
 function reverse() { for (var i=0; i<n; i++){ vx[i] = -vx[i]; vy[i] = -vy[i];} }
 
@@ -380,6 +584,7 @@ var init = function() {
     init_empty();
     init_sidelength(calc_sidelength());
     init_circle(frac);
+    update_allcontrols();
 
     document.body.addEventListener('keyup', function(ev) {
         if (ev.keyCode == 87){ keys[0] = 0; } //up
